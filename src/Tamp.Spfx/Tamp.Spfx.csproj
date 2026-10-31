@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+    <RootNamespace>Tamp.Spfx</RootNamespace>
+    <AssemblyName>Tamp.Spfx</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package">
+    <PackageId>Tamp.Spfx</PackageId>
+    <Description>Tamp build support for SharePoint Framework (SPFx 1.22+, the Heft toolchain): typed build / test / package-solution verbs over Tamp.Heft.V1, a project model (package-solution.json, externals, output locations), format-preserving solution version stamping, and a .sppkg inspector with a deploy policy gate (API permission requests, tenant-wide deployment, external script origins, custom-script requirement, version monotonicity) that emits JSON evidence and SARIF for the Tamp security pipeline.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="$(TampCorePath)" Condition="'$(TampCoreMode)' == 'project'" />
+    <ProjectReference Include="$(TampSarifPath)" Condition="'$(TampCoreMode)' == 'project'" />
+    <PackageReference Include="Tamp.Core" Condition="'$(TampCoreMode)' == 'package'" />
+    <PackageReference Include="Tamp.Sarif" Condition="'$(TampCoreMode)' == 'package'" />
+    <ProjectReference Include="$(TampHeftPath)" Condition="'$(TampHeftMode)' == 'project'" />
+    <PackageReference Include="Tamp.Heft.V1" Condition="'$(TampHeftMode)' == 'package'" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+  </ItemGroup>
+
+</Project>

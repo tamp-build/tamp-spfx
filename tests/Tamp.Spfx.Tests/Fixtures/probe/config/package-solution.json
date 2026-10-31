@@ -1,0 +1,62 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "spfx-probe-client-side-solution",
+    "id": "67271b26-cf99-4d77-a709-4faee6ca69f9",
+    "version": "1.2.3.4",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.23.0-rc.1"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "Hello Probe description"
+      },
+      "longDescription": {
+        "default": "Hello Probe description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "spfx-probe Feature",
+        "description": "The feature that activates elements of the spfx-probe solution.",
+        "id": "49258695-6ff8-4f46-a82e-cfce5ceaa161",
+        "version": "1.0.0.0"
+      },
+      {
+        "title": "Application Extension - Deployment of custom action",
+        "description": "Deploys a custom action with ClientSideComponentId association",
+        "id": "5b7029eb-f94e-4225-91ae-9520f23a94f8",
+        "version": "1.0.0.0",
+        "assets": {
+          "elementManifests": [
+            "elements.xml",
+            "ClientSideInstance.xml"
+          ]
+        }
+      }
+    ],
+    "webApiPermissionRequests": [
+      {
+        "resource": "Microsoft Graph",
+        "scope": "Sites.Read.All"
+      },
+      {
+        "resource": "Contoso API",
+        "scope": "user_impersonation"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/spfx-probe.sppkg"
+  }
+}

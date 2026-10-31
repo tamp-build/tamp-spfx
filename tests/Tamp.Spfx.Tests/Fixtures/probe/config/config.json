@@ -1,0 +1,32 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "hello-probe-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/helloProbeWebPart/HelloProbeWebPart.js",
+          "manifest": "./src/webparts/helloProbeWebPart/HelloProbeWebPart.manifest.json"
+        }
+      ]
+    },
+    "probe-banner-application-customizer": {
+      "components": [
+        {
+          "entrypoint": "./lib/extensions/probeBannerApplicationCustomizer/ProbeBannerApplicationCustomizer.js",
+          "manifest": "./src/extensions/probeBannerApplicationCustomizer/ProbeBannerApplicationCustomizer.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {
+    "jquery": {
+      "path": "https://code.jquery.com/jquery-3.7.1.min.js",
+      "globalName": "jQuery"
+    }
+  },
+  "localizedResources": {
+    "HelloProbeWebPartStrings": "lib/webparts/helloProbeWebPart/loc/{locale}.js",
+    "ProbeBannerApplicationCustomizerStrings": "lib/extensions/probeBannerApplicationCustomizer/loc/{locale}.js"
+  }
+}
