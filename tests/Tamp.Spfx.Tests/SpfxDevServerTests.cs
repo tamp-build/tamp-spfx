@@ -17,7 +17,9 @@ public sealed class SpfxDevServerTests
         const http = require('http');
         console.log('fake heft ' + process.argv.slice(2).join(' '));
         http.createServer((q, r) => { r.writeHead(q.url === '/temp/build/manifests.js' ? 200 : 404); r.end(); })
-          .listen(+process.env.FAKE_PORT);
+          .listen(+process.env.FAKE_PORT, () => {
+            if (process.env.FAKE_EXIT_MS) setTimeout(() => process.exit(3), +process.env.FAKE_EXIT_MS);
+          });
         """;
 
     private static bool HaveNode => FindOnPath("node") is not null;
@@ -27,19 +29,7 @@ public sealed class SpfxDevServerTests
     {
         if (!HaveNode) return;
         using var t = new TempDir();
-        var port = FreePort();
-        var heft = Path.Combine(t.Path, "node_modules", "@rushstack", "heft");
-        Directory.CreateDirectory(Path.Combine(heft, "bin"));
-        File.WriteAllText(Path.Combine(heft, "package.json"), """{ "name": "@rushstack/heft", "version": "1.3.2", "bin": { "heft": "./bin/heft" } }""");
-        File.WriteAllText(Path.Combine(heft, "bin", "heft"), FakeHeft.Replace("\r\n", "\n", StringComparison.Ordinal));
-        Directory.CreateDirectory(Path.Combine(t.Path, "config"));
-        File.WriteAllText(Path.Combine(t.Path, "config", "serve.json"), $$"""
-            { "port": {{port}}, "https": false,
-              "serveConfigurations": {
-                "default": { "pageUrl": "https://{tenantDomain}/_layouts/workbench.aspx" },
-                "myForm_EditForm": { "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
-                  "formCustomizer": { "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58", "PageType": 6, "RootFolder": "/sites/s/Lists/L", "ID": 1 } } } }
-            """);
+        var port = WriteFakeProject(t);
         var output = TextWriter.Synchronized(new StringWriter());
 
         await using (var server = await Spfx.StartDevServerAsync(s => s
@@ -90,6 +80,79 @@ public sealed class SpfxDevServerTests
         File.WriteAllText(t.File(Path.Combine("config", "package-solution.json")), """{ "solution": { "version": "1.0.0.0" } }""");
         var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => Spfx.StartDevServerAsync(s => s.SetWorkingDirectory(t.Path)));
         Assert.Contains("gulp", ex.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public async Task Dispose_Stops_The_Server_Once_And_Reports_Requested()
+    {
+        if (!HaveNode) return;
+        using var t = new TempDir();
+        var port = WriteFakeProject(t);
+
+        var server = await StartAsync(t, port);
+        Assert.False(server.HasExited);
+        Assert.False(server.IsStopping);
+        Assert.Null(server.StopReason);
+
+        await server.DisposeAsync();
+        Assert.True(server.HasExited);
+        Assert.True(server.IsStopping);
+        Assert.Equal(Tamp.ServiceStopReason.Requested, server.StopReason);
+        Assert.Equal(Tamp.ServiceStopReason.Requested, server.Server.StopReason);
+
+        // Disposing again, through either layer, is a no-op and doesn't change the recorded stop.
+        server.Dispose();
+        await server.DisposeAsync();
+        server.Server.Dispose();
+        Assert.Equal(Tamp.ServiceStopReason.Requested, server.StopReason);
+        await server.WaitForExitAsync();
+    }
+
+    [Fact]
+    public async Task A_Server_That_Exits_On_Its_Own_Reports_Exited_With_Its_Code()
+    {
+        if (!HaveNode) return;
+        using var t = new TempDir();
+        var port = WriteFakeProject(t);
+
+        await using var server = await StartAsync(t, port, ("FAKE_EXIT_MS", "500"));
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        await server.WaitForExitAsync(timeout.Token);
+
+        Assert.True(server.HasExited);
+        Assert.Equal(Tamp.ServiceStopReason.Exited, server.StopReason);
+        Assert.Equal(3, server.ExitCode);
+    }
+
+    private static Task<SpfxDevServer> StartAsync(TempDir t, int port, params (string Name, string Value)[] env) =>
+        Spfx.StartDevServerAsync(s =>
+        {
+            s.SetWorkingDirectory(t.Path)
+             .SetStatePath(Path.Combine(t.Path, ".tamp", "state.json"))
+             .SetOutput(TextWriter.Synchronized(new StringWriter()))
+             .SetPollInterval(TimeSpan.FromMilliseconds(100))
+             .SetReadyTimeout(TimeSpan.FromSeconds(30))
+             .SetEnvironmentVariable("FAKE_PORT", port.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            foreach (var (name, value) in env) s.SetEnvironmentVariable(name, value);
+        });
+
+    /// <summary>A project with the fake Heft and a <c>serve.json</c> on a free port; returns the port.</summary>
+    private static int WriteFakeProject(TempDir t)
+    {
+        var port = FreePort();
+        var heft = Path.Combine(t.Path, "node_modules", "@rushstack", "heft");
+        Directory.CreateDirectory(Path.Combine(heft, "bin"));
+        File.WriteAllText(Path.Combine(heft, "package.json"), """{ "name": "@rushstack/heft", "version": "1.3.2", "bin": { "heft": "./bin/heft" } }""");
+        File.WriteAllText(Path.Combine(heft, "bin", "heft"), FakeHeft.Replace("\r\n", "\n", StringComparison.Ordinal));
+        Directory.CreateDirectory(Path.Combine(t.Path, "config"));
+        File.WriteAllText(Path.Combine(t.Path, "config", "serve.json"), $$"""
+            { "port": {{port}}, "https": false,
+              "serveConfigurations": {
+                "default": { "pageUrl": "https://{tenantDomain}/_layouts/workbench.aspx" },
+                "myForm_EditForm": { "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+                  "formCustomizer": { "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58", "PageType": 6, "RootFolder": "/sites/s/Lists/L", "ID": 1 } } } }
+            """);
+        return port;
     }
 
     private static int FreePort()
