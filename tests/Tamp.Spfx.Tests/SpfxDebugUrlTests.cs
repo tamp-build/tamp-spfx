@@ -79,6 +79,23 @@ public sealed class SpfxDebugUrlTests
         }
         """;
 
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void A_Blank_Tenant_Domain_Counts_As_None(string blank)
+    {
+        if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(SpfxServeConfig.TenantDomainVariable))) return;
+        var ex = Assert.Throws<InvalidOperationException>(() => SpfxDebugUrl.Build(SpfxServeConfig.Parse(FormServe), "myForm_EditForm", blank));
+        Assert.Contains(SpfxServeConfig.TenantDomainVariable, ex.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void A_Tenant_Domain_Is_Trimmed()
+    {
+        var url = SpfxDebugUrl.Build(SpfxServeConfig.Parse(FormServe), "myForm_EditForm", "  contoso.sharepoint.com ");
+        Assert.StartsWith("https://contoso.sharepoint.com/_layouts/15/SPListForm.aspx?", url, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void Unknown_Configuration_Throws_With_The_Names_Instead_Of_Falling_Back()
     {

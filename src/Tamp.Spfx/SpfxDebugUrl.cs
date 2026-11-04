@@ -56,7 +56,8 @@ public static class SpfxDebugUrl
     public static string Build(SpfxServeConfig serve, string? configuration = null, string? tenantDomain = null, string? manifestsUrl = null)
     {
         if (serve is null) throw new ArgumentNullException(nameof(serve));
-        tenantDomain ??= NonEmpty(Environment.GetEnvironmentVariable(SpfxServeConfig.TenantDomainVariable));
+        // A blank tenant domain counts as none, so it gets the clear "set SPFX_SERVE_TENANT_DOMAIN" error below.
+        tenantDomain = NonEmpty(tenantDomain?.Trim()) ?? NonEmpty(Environment.GetEnvironmentVariable(SpfxServeConfig.TenantDomainVariable)?.Trim());
 
         SpfxServeConfiguration? selected = null;
         if (configuration is not null)
