@@ -4,7 +4,7 @@
 
 | Package | Status |
 |---|---|
-| `Tamp.Spfx` | 0.2.0 |
+| `Tamp.Spfx` | 0.3.0 |
 
 ```bash
 dotnet add package Tamp.Spfx
@@ -101,6 +101,7 @@ Target FormEvidence => _ => _
 - **The rig's own rules.** The URL carries `debugManifestsFile`, `debug=true` and `noredir=true`. For extensions it adds `loadSPFX=true` plus `customActions`, `fieldCustomizers` or the Form Customizer's fields (`componentId`, `PageType`, `RootFolder`, `ID`, `ContentTypeID`, `properties`), and drops `debug=true`. The page URL's own query string is replaced, as the rig does. The tests compare against URLs computed by `@microsoft/spfx-heft-plugins` 1.24.1 itself (`tests/Tamp.Spfx.Tests/Fixtures/debug-urls`).
 - **Two deliberate differences.** A configuration name that isn't in `serve.json` throws and lists the names; the rig silently falls back to `default`. A `{tenantDomain}` placeholder with no tenant domain also throws; the rig produces `https://{tenantdomain}/...`.
 - **Built on demand, never stored.** The debug URL isn't written to the dev server's state file. `SpfxDebugUrl.Build(SpfxServeConfig.Load(dir), ...)` builds one without a running server.
+- **Lifecycle.** The process is `HeftDevServer`'s, built on Tamp.Core's `ManagedProcess`. Inside a `tamp` run, Ctrl+C cancels the start along with the build, and a server still running when the build ends is stopped for you, so a server started in one target can serve later ones but never outlives the build. `server.StopReason` (`requested`, `signal`, `exited`, `timeout`) says why it stopped, matching the `service.stopped` event; `HasExited`, `ExitCode` and `WaitForExitAsync` are there too. Disposing is idempotent.
 - **Trusting the dev certificate.** `Spfx.TrustDevCertificate` runs `heft trust-dev-cert` once per machine, so browsers accept `https://localhost:4321` without a warning. It prompts on Windows and macOS, so it isn't for headless CI.
 
 ## Project model: `SpfxProject.Load(dir)`

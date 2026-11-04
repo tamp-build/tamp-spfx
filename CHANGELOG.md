@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-11-04
+
+### Added
+
+- `SpfxDevServer.StopReason`, `HasExited`, `IsStopping`, `ExitCode` and `WaitForExitAsync`: the dev server's lifecycle, passed through from `HeftDevServer`. `StopReason` is `requested`, `signal`, `exited` or `timeout` (`Tamp.ServiceStopReason`), the same reason `service.stopped` carries, so a deliberate stop can be told from a failure without reading the exit code, which is non-zero after a kill ([#4](https://github.com/tamp-build/tamp-spfx/issues/4)).
+
+### Changed
+
+- Requires `Tamp.Heft.V1` 0.3.0 / `Tamp.Core` 1.18.0. `HeftDevServer` now runs on Tamp.Core's `ManagedProcess`, so inside a `tamp` run the dev server honours the build's cancellation (Ctrl+C, SIGTERM, SIGHUP) as well as the token passed to `Spfx.StartDevServerAsync`, emits `service.ready` / `service.stopped`, and is stopped by Tamp.Core's end-of-build backstop if a target doesn't dispose it: a server started in one target can serve later targets but never outlives the build. `SpfxDevServer` still owns no process state of its own; disposing it (once or several times, through either layer) stops the server once.
+- The rest of the Tamp family (`Tamp.Sarif`, and the build script's `Tamp.NetCli.V10`, `Tamp.Components`, `Tamp.Components.NetCli.V10`) moves to 1.18.0 with `Tamp.Core`.
+- `SpfxDebugUrl.Build` is unchanged and still matches `@microsoft/spfx-heft-plugins` 1.24.1 character for character.
+
 ## [0.2.0] — 2026-11-04
 
 ### Added
