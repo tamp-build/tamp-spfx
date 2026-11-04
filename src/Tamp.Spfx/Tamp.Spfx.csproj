@@ -8,7 +8,7 @@
 
   <PropertyGroup Label="Package">
     <PackageId>Tamp.Spfx</PackageId>
-    <Description>Tamp build support for SharePoint Framework (SPFx 1.22+, the Heft toolchain): typed build / test / package-solution verbs over Tamp.Heft.V1, a project model (package-solution.json, externals, output locations), format-preserving solution version stamping, and a .sppkg inspector with a deploy policy gate (API permission requests, tenant-wide deployment, external script origins, custom-script requirement, version monotonicity) that emits JSON evidence and SARIF for the Tamp security pipeline.</Description>
+    <Description>Tamp build support for SharePoint Framework (SPFx 1.22+, the Heft toolchain): typed build / test / package-solution verbs over Tamp.Heft.V1, a managed dev server with SharePoint debug-page URLs (including Form Customizers), a project model (package-solution.json, externals, output locations), format-preserving solution version stamping, and a .sppkg inspector with a deploy policy gate (API permission requests, tenant-wide deployment, external script origins, custom-script requirement, version monotonicity) that emits JSON evidence and SARIF for the Tamp security pipeline.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <IsPackable>true</IsPackable>
   </PropertyGroup>

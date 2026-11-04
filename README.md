@@ -4,7 +4,7 @@
 
 | Package | Status |
 |---|---|
-| `Tamp.Spfx` | 0.1.0 (initial) |
+| `Tamp.Spfx` | 0.2.0 |
 
 ```bash
 dotnet add package Tamp.Spfx
@@ -74,10 +74,34 @@ Run it once against the [test fixture's](tests/Tamp.Spfx.Tests/Fixtures/README.m
 | `Spfx.Test` | `heft test --production` (writes JUnit and Cobertura under `jest-output/`) |
 | `Spfx.PackageSolution` | `heft package-solution --production` (`SetPrettyPrintXml`, `SetNoSppkg`) |
 | `Spfx.Clean` | `heft clean` |
+| `Spfx.TrustDevCertificate` | `heft trust-dev-cert` |
+| `Spfx.StartDevServerAsync` | `heft start`, managed (see [Dev server](#dev-server-and-debug-urls)) |
 
 `--production` is on by default; `s.SetProduction(false)` gives a debug build. A gulp-based project (SPFx 1.21 and earlier) is refused with an explanation rather than handed to Heft.
 
 > **`package-solution` does not rebuild.** It packages whatever the last build left behind, and exits 0 even after a failed build. Always run it after a successful `Test` or `Build` in the same mode, as the template's `npm run build` does. `SppkgPolicy.ExpectedVersion` catches the stale-package case when you stamp a version per build.
+
+## Dev server and debug URLs
+
+`Spfx.StartDevServerAsync` runs `heft start` through Tamp.Heft's [`HeftDevServer`](https://github.com/tamp-build/tamp-heft#dev-server). It waits until `temp/build/manifests.js` is served, reports the URL, and kills the process tree on dispose. It also returns the SharePoint debug-page URL for any `serve.json` serve configuration, so browser automation opens exactly the page `heft start` would.
+
+```csharp
+Target FormEvidence => _ => _
+    .DependsOn(nameof(Restore))
+    .Executes(async () =>
+    {
+        await using var server = await Spfx.StartDevServerAsync(s => s.SetWorkingDirectory(Web));
+        // https://contoso.sharepoint.com/_layouts/15/SPListForm.aspx?debugManifestsFile=...&loadSPFX=true&componentId=...&PageType=6&...
+        var editForm = server.DebugUrl("myForm_EditForm", tenantDomain: "contoso.sharepoint.com");
+        await RunPlaywrightAsync(editForm);
+    });
+```
+
+- **One URL per serve configuration.** `DebugUrl(name)` takes a key of `serveConfigurations`; omit it for `default`. `server.ConfigurationNames` lists them. `{tenantDomain}` comes from the argument, else `SPFX_SERVE_TENANT_DOMAIN`, as for the rig.
+- **The rig's own rules.** The URL carries `debugManifestsFile`, `debug=true` and `noredir=true`. For extensions it adds `loadSPFX=true` plus `customActions`, `fieldCustomizers` or the Form Customizer's fields (`componentId`, `PageType`, `RootFolder`, `ID`, `ContentTypeID`, `properties`), and drops `debug=true`. The page URL's own query string is replaced, as the rig does. The tests compare against URLs computed by `@microsoft/spfx-heft-plugins` 1.24.1 itself (`tests/Tamp.Spfx.Tests/Fixtures/debug-urls`).
+- **Two deliberate differences.** A configuration name that isn't in `serve.json` throws and lists the names; the rig silently falls back to `default`. A `{tenantDomain}` placeholder with no tenant domain also throws; the rig produces `https://{tenantdomain}/...`.
+- **Built on demand, never stored.** The debug URL isn't written to the dev server's state file. `SpfxDebugUrl.Build(SpfxServeConfig.Load(dir), ...)` builds one without a running server.
+- **Trusting the dev certificate.** `Spfx.TrustDevCertificate` runs `heft trust-dev-cert` once per machine, so browsers accept `https://localhost:4321` without a warning. It prompts on Windows and macOS, so it isn't for headless CI.
 
 ## Project model: `SpfxProject.Load(dir)`
 

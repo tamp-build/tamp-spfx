@@ -59,6 +59,30 @@ public static class Spfx
     /// <summary><c>heft clean</c>.</summary>
     public static CommandPlan Clean(Action<HeftCleanSettings> configure) => Run(new HeftCleanSettings(), configure);
 
+    /// <summary>
+    /// <c>heft trust-dev-cert</c>: create the SPFx dev certificate and add it to the OS trust store, so browsers
+    /// (and browser automation) accept <c>https://localhost:4321</c> without a warning. Run it once per machine.
+    /// On Windows and macOS this asks the user to confirm, so it isn't for headless CI.
+    /// </summary>
+    public static CommandPlan TrustDevCertificate(Action<HeftActionSettings> configure) =>
+        Run(new HeftActionSettings("trust-dev-cert"), configure);
+
+    /// <summary>
+    /// Start <c>heft start</c> through <see cref="HeftDevServer"/> and wait until it serves the manifests. Returns a
+    /// handle that also builds SharePoint debug-page URLs from the project's <c>serve.json</c>; dispose it to stop the
+    /// server. Opt-in: keep it out of a CI target's dependencies.
+    /// </summary>
+    public static async Task<SpfxDevServer> StartDevServerAsync(Action<HeftDevServerSettings> configure, CancellationToken cancellationToken = default)
+    {
+        if (configure is null) throw new ArgumentNullException(nameof(configure));
+        var settings = new HeftDevServerSettings();
+        configure(settings);
+        RefuseGulp(settings.WorkingDirectory);
+        var serve = SpfxServeConfig.Load(settings.WorkingDirectory ?? Directory.GetCurrentDirectory());
+        var server = await HeftDevServer.StartAsync(settings, cancellationToken).ConfigureAwait(false);
+        return new SpfxDevServer(server, serve);
+    }
+
     private static CommandPlan Run<T>(T settings, Action<T> configure) where T : HeftSettingsBase
     {
         if (configure is null) throw new ArgumentNullException(nameof(configure));

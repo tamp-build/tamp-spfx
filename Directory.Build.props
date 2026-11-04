@@ -36,7 +36,7 @@
 
   <!--
     Tamp.Heft.V1 is a sibling satellite with its own release cadence, so it gets its own switch.
-    `project` builds against a ..\tamp-heft clone (inner loop, and CI until a Heft release exists);
+    `project` builds against a ..\tamp-heft clone (inner loop);
     `package` uses the published NuGet package (release builds). Defaults to TampCoreMode.
   -->
   <PropertyGroup Label="Tamp.Heft dependency mode">
@@ -45,7 +45,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Tamp central version">
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
   </PropertyGroup>
 
 </Project>
