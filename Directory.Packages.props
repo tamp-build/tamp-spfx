@@ -22,7 +22,7 @@
     <PackageVersion Include="Tamp.Components" Version="1.17.5" />
     <PackageVersion Include="Tamp.Components.NetCli.V10" Version="1.17.5" />
     <PackageVersion Include="Tamp.Sarif" Version="1.17.5" />
-    <PackageVersion Include="Tamp.Heft.V1" Version="0.1.0" />
+    <PackageVersion Include="Tamp.Heft.V1" Version="0.2.0" />
     <PackageVersion Include="Tamp.Telegram" Version="0.1.0" />
   </ItemGroup>
 

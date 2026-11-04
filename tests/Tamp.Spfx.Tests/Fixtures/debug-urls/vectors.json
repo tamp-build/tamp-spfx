@@ -1,0 +1,500 @@
+{
+  "generatedBy": "@microsoft/spfx-heft-plugins 1.24.1",
+  "vectors": [
+    {
+      "name": "form customizer: default",
+      "serve": {
+        "port": 4321,
+        "https": true,
+        "serveConfigurations": {
+          "default": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 8,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          },
+          "fixtureForm_NewForm": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 8,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          },
+          "fixtureForm_EditForm": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 6,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "ID": 1,
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          },
+          "fixtureForm_ViewForm": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 4,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "ID": 1,
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          }
+        }
+      },
+      "configuration": null,
+      "tenantDomain": "contoso.sharepoint.com",
+      "expected": "https://contoso.sharepoint.com/_layouts/15/SPListForm.aspx?debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fbuild%2Fmanifests.js&noredir=true&loadSPFX=true&componentId=2875713c-2c49-4baf-9725-fcc44d531e58&PageType=8&RootFolder=%2Fsites%2FmySite%2FLists%2FMyList&properties=%7B%22sampleText%22%3A%22Value%22%7D"
+    },
+    {
+      "name": "form customizer: new form",
+      "serve": {
+        "port": 4321,
+        "https": true,
+        "serveConfigurations": {
+          "default": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 8,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          },
+          "fixtureForm_NewForm": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 8,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          },
+          "fixtureForm_EditForm": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 6,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "ID": 1,
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          },
+          "fixtureForm_ViewForm": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 4,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "ID": 1,
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          }
+        }
+      },
+      "configuration": "fixtureForm_NewForm",
+      "tenantDomain": "contoso.sharepoint.com",
+      "expected": "https://contoso.sharepoint.com/_layouts/15/SPListForm.aspx?debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fbuild%2Fmanifests.js&noredir=true&loadSPFX=true&componentId=2875713c-2c49-4baf-9725-fcc44d531e58&PageType=8&RootFolder=%2Fsites%2FmySite%2FLists%2FMyList&properties=%7B%22sampleText%22%3A%22Value%22%7D"
+    },
+    {
+      "name": "form customizer: edit form",
+      "serve": {
+        "port": 4321,
+        "https": true,
+        "serveConfigurations": {
+          "default": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 8,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          },
+          "fixtureForm_NewForm": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 8,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          },
+          "fixtureForm_EditForm": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 6,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "ID": 1,
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          },
+          "fixtureForm_ViewForm": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 4,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "ID": 1,
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          }
+        }
+      },
+      "configuration": "fixtureForm_EditForm",
+      "tenantDomain": "contoso.sharepoint.com",
+      "expected": "https://contoso.sharepoint.com/_layouts/15/SPListForm.aspx?debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fbuild%2Fmanifests.js&noredir=true&loadSPFX=true&componentId=2875713c-2c49-4baf-9725-fcc44d531e58&PageType=6&RootFolder=%2Fsites%2FmySite%2FLists%2FMyList&ID=1&properties=%7B%22sampleText%22%3A%22Value%22%7D"
+    },
+    {
+      "name": "form customizer: view form",
+      "serve": {
+        "port": 4321,
+        "https": true,
+        "serveConfigurations": {
+          "default": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 8,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          },
+          "fixtureForm_NewForm": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 8,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          },
+          "fixtureForm_EditForm": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 6,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "ID": 1,
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          },
+          "fixtureForm_ViewForm": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 4,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "ID": 1,
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          }
+        }
+      },
+      "configuration": "fixtureForm_ViewForm",
+      "tenantDomain": "contoso.sharepoint.com",
+      "expected": "https://contoso.sharepoint.com/_layouts/15/SPListForm.aspx?debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fbuild%2Fmanifests.js&noredir=true&loadSPFX=true&componentId=2875713c-2c49-4baf-9725-fcc44d531e58&PageType=4&RootFolder=%2Fsites%2FmySite%2FLists%2FMyList&ID=1&properties=%7B%22sampleText%22%3A%22Value%22%7D"
+    },
+    {
+      "name": "tenant domain missing",
+      "serve": {
+        "port": 4321,
+        "https": true,
+        "serveConfigurations": {
+          "default": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 8,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          },
+          "fixtureForm_NewForm": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 8,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          },
+          "fixtureForm_EditForm": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 6,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "ID": 1,
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          },
+          "fixtureForm_ViewForm": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 4,
+              "RootFolder": "/sites/mySite/Lists/MyList",
+              "ID": 1,
+              "properties": {
+                "sampleText": "Value"
+              }
+            }
+          }
+        }
+      },
+      "configuration": "fixtureForm_NewForm",
+      "tenantDomain": null,
+      "expected": "https://{tenantdomain}/_layouts/15/SPListForm.aspx?debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fbuild%2Fmanifests.js&noredir=true&loadSPFX=true&componentId=2875713c-2c49-4baf-9725-fcc44d531e58&PageType=8&RootFolder=%2Fsites%2FmySite%2FLists%2FMyList&properties=%7B%22sampleText%22%3A%22Value%22%7D"
+    },
+    {
+      "name": "web part workbench",
+      "serve": {
+        "port": 4321,
+        "https": true,
+        "initialPage": "https://{tenantDomain}/_layouts/workbench.aspx",
+        "serveConfigurations": {
+          "default": {
+            "pageUrl": "https://{tenantDomain}/_layouts/workbench.aspx"
+          }
+        }
+      },
+      "configuration": null,
+      "tenantDomain": "contoso.sharepoint.com",
+      "expected": "https://contoso.sharepoint.com/_layouts/workbench.aspx?debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fbuild%2Fmanifests.js&debug=true&noredir=true"
+    },
+    {
+      "name": "initialPage only, no serveConfigurations",
+      "serve": {
+        "port": 4321,
+        "https": true,
+        "initialPage": "https://contoso.sharepoint.com/_layouts/workbench.aspx"
+      },
+      "configuration": null,
+      "tenantDomain": null,
+      "expected": "https://contoso.sharepoint.com/_layouts/workbench.aspx?debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fbuild%2Fmanifests.js&debug=true&noredir=true"
+    },
+    {
+      "name": "application customizer",
+      "serve": {
+        "https": true,
+        "serveConfigurations": {
+          "default": {
+            "pageUrl": "https://{tenantDomain}/sites/dev",
+            "customActions": {
+              "a1b2c3d4-0000-4000-8000-000000000001": {
+                "location": "ClientSideExtension.ApplicationCustomizer",
+                "properties": {
+                  "testMessage": "Test message",
+                  "count": 3
+                }
+              }
+            }
+          }
+        }
+      },
+      "configuration": null,
+      "tenantDomain": "contoso.sharepoint.com",
+      "expected": "https://contoso.sharepoint.com/sites/dev?debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fbuild%2Fmanifests.js&noredir=true&loadSPFX=true&customActions=%7B%22a1b2c3d4-0000-4000-8000-000000000001%22%3A%7B%22location%22%3A%22ClientSideExtension.ApplicationCustomizer%22%2C%22properties%22%3A%7B%22testMessage%22%3A%22Test+message%22%2C%22count%22%3A3%7D%7D%7D"
+    },
+    {
+      "name": "field customizers",
+      "serve": {
+        "https": true,
+        "serveConfigurations": {
+          "default": {
+            "pageUrl": "https://{tenantDomain}/sites/dev/Lists/Tasks/AllItems.aspx",
+            "fieldCustomizers": {
+              "Percent": {
+                "id": "a1b2c3d4-0000-4000-8000-000000000002",
+                "properties": {
+                  "sampleText": "Value"
+                }
+              }
+            }
+          }
+        }
+      },
+      "configuration": null,
+      "tenantDomain": "contoso.sharepoint.com",
+      "expected": "https://contoso.sharepoint.com/sites/dev/Lists/Tasks/AllItems.aspx?debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fbuild%2Fmanifests.js&noredir=true&loadSPFX=true&fieldCustomizers=%7B%22Percent%22%3A%7B%22id%22%3A%22a1b2c3d4-0000-4000-8000-000000000002%22%2C%22properties%22%3A%7B%22sampleText%22%3A%22Value%22%7D%7D%7D"
+    },
+    {
+      "name": "command set and app customizer together",
+      "serve": {
+        "https": true,
+        "serveConfigurations": {
+          "default": {
+            "pageUrl": "https://{tenantDomain}/sites/dev/Lists/Tasks/AllItems.aspx",
+            "customActions": {
+              "a1b2c3d4-0000-4000-8000-000000000003": {
+                "location": "ClientSideExtension.ListViewCommandSet.CommandBar",
+                "properties": {
+                  "sampleTextOne": "One item is selected in the list",
+                  "sampleTextTwo": "This command is always visible."
+                }
+              },
+              "a1b2c3d4-0000-4000-8000-000000000004": {
+                "location": "ClientSideExtension.ApplicationCustomizer"
+              }
+            }
+          }
+        }
+      },
+      "configuration": null,
+      "tenantDomain": "contoso.sharepoint.com",
+      "expected": "https://contoso.sharepoint.com/sites/dev/Lists/Tasks/AllItems.aspx?debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fbuild%2Fmanifests.js&noredir=true&loadSPFX=true&customActions=%7B%22a1b2c3d4-0000-4000-8000-000000000003%22%3A%7B%22location%22%3A%22ClientSideExtension.ListViewCommandSet.CommandBar%22%2C%22properties%22%3A%7B%22sampleTextOne%22%3A%22One+item+is+selected+in+the+list%22%2C%22sampleTextTwo%22%3A%22This+command+is+always+visible.%22%7D%7D%2C%22a1b2c3d4-0000-4000-8000-000000000004%22%3A%7B%22location%22%3A%22ClientSideExtension.ApplicationCustomizer%22%7D%7D"
+    },
+    {
+      "name": "form customizer: encoded root folder, ID 0, special characters",
+      "serve": {
+        "https": true,
+        "serveConfigurations": {
+          "default": {
+            "pageUrl": "https://{tenantDomain}/_layouts/15/SPListForm.aspx",
+            "formCustomizer": {
+              "componentId": "2875713c-2c49-4baf-9725-fcc44d531e58",
+              "PageType": 6,
+              "RootFolder": "%2Fsites%2FmySite%2FLists%2FMy%20List",
+              "ID": 0,
+              "ContentTypeID": "0x0100ABC",
+              "properties": {
+                "text": "a b&c=d/é ü \"q\" <x> ~*",
+                "nested": {
+                  "n": 1.5,
+                  "t": true,
+                  "z": null,
+                  "list": [
+                    1,
+                    "two"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "configuration": null,
+      "tenantDomain": "contoso.sharepoint.com",
+      "expected": "https://contoso.sharepoint.com/_layouts/15/SPListForm.aspx?debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fbuild%2Fmanifests.js&noredir=true&loadSPFX=true&componentId=2875713c-2c49-4baf-9725-fcc44d531e58&PageType=6&RootFolder=%2Fsites%2FmySite%2FLists%2FMy+List&ContentTypeID=0x0100ABC&properties=%7B%22text%22%3A%22a+b%26c%3Dd%2F%C3%A9+%C3%BC+%5C%22q%5C%22+%3Cx%3E+%7E*%22%2C%22nested%22%3A%7B%22n%22%3A1.5%2C%22t%22%3Atrue%2C%22z%22%3Anull%2C%22list%22%3A%5B1%2C%22two%22%5D%7D%7D"
+    },
+    {
+      "name": "page url with query, fragment and upper-case host",
+      "serve": {
+        "https": true,
+        "serveConfigurations": {
+          "default": {
+            "pageUrl": "https://Contoso.SharePoint.com/sites/Dev/SitePages/Home.aspx?foo=1&bar=2#top"
+          }
+        }
+      },
+      "configuration": null,
+      "tenantDomain": null,
+      "expected": "https://contoso.sharepoint.com/sites/Dev/SitePages/Home.aspx?debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fbuild%2Fmanifests.js&debug=true&noredir=true#top"
+    },
+    {
+      "name": "custom hostname, http, port",
+      "serve": {
+        "port": 4500,
+        "https": false,
+        "hostname": "dev.localhost",
+        "serveConfigurations": {
+          "default": {
+            "pageUrl": "https://contoso.sharepoint.com/_layouts/workbench.aspx"
+          }
+        }
+      },
+      "configuration": null,
+      "tenantDomain": null,
+      "expected": "https://contoso.sharepoint.com/_layouts/workbench.aspx?debugManifestsFile=http%3A%2F%2Fdev.localhost%3A4500%2Ftemp%2Fbuild%2Fmanifests.js&debug=true&noredir=true"
+    },
+    {
+      "name": "ipAddress wildcard, no hostname",
+      "serve": {
+        "port": 4321,
+        "https": true,
+        "ipAddress": "0.0.0.0",
+        "serveConfigurations": {
+          "default": {
+            "pageUrl": "https://contoso.sharepoint.com/_layouts/workbench.aspx"
+          }
+        }
+      },
+      "configuration": null,
+      "tenantDomain": null,
+      "expected": "https://contoso.sharepoint.com/_layouts/workbench.aspx?debugManifestsFile=https%3A%2F%2F0.0.0.0%3A4321%2Ftemp%2Fbuild%2Fmanifests.js&debug=true&noredir=true"
+    },
+    {
+      "name": "tenant placeholder in the middle of the url, mixed case",
+      "serve": {
+        "https": true,
+        "serveConfigurations": {
+          "default": {
+            "pageUrl": "https://{TENANTDOMAIN}/sites/{tenantDomain}/x.aspx"
+          }
+        }
+      },
+      "configuration": null,
+      "tenantDomain": "contoso.sharepoint.com",
+      "expected": "https://contoso.sharepoint.com/sites/%7BtenantDomain%7D/x.aspx?debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fbuild%2Fmanifests.js&debug=true&noredir=true"
+    },
+    {
+      "name": "tenant domain on a GCC High host",
+      "serve": {
+        "https": true,
+        "serveConfigurations": {
+          "default": {
+            "pageUrl": "https://{tenantDomain}/_layouts/workbench.aspx"
+          }
+        }
+      },
+      "configuration": null,
+      "tenantDomain": "contoso.sharepoint.us",
+      "expected": "https://contoso.sharepoint.us/_layouts/workbench.aspx?debugManifestsFile=https%3A%2F%2Flocalhost%3A4321%2Ftemp%2Fbuild%2Fmanifests.js&debug=true&noredir=true"
+    }
+  ]
+}
