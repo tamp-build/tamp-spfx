@@ -17,6 +17,13 @@ namespace Tamp.Spfx;
 /// });
 /// </code>
 /// </example>
+/// <remarks>
+/// The process lifecycle is <see cref="HeftDevServer"/>'s (built on Tamp.Core's <c>ManagedProcess</c>); this type adds
+/// nothing to it. Inside a <c>tamp</c> run, Ctrl+C / SIGTERM / SIGHUP cancel the build's token, which the start honours
+/// as well as the one passed to <see cref="Spfx.StartDevServerAsync"/>; a server still running when the build ends is
+/// stopped by Tamp.Core's backstop, so one started in a target can serve later targets but never outlives the build.
+/// Every stop emits <c>service.stopped</c> with its <see cref="StopReason"/>.
+/// </remarks>
 public sealed class SpfxDevServer : IAsyncDisposable, IDisposable
 {
     internal SpfxDevServer(HeftDevServer server, SpfxServeConfig serve)
@@ -43,7 +50,32 @@ public sealed class SpfxDevServer : IAsyncDisposable, IDisposable
     public string DebugUrl(string? configuration = null, string? tenantDomain = null) =>
         SpfxDebugUrl.Build(Serve, configuration, tenantDomain, Server.ManifestsUrl.ToString());
 
-    /// <summary>Stop the server (kills its process tree and removes its state file).</summary>
+    /// <summary>True once the Heft process has exited (stopped, or on its own).</summary>
+    public bool HasExited => Server.HasExited;
+
+    /// <summary>True once a stop (dispose, an interrupt or the end-of-build backstop) has begun.</summary>
+    public bool IsStopping => Server.IsStopping;
+
+    /// <summary>
+    /// Heft's exit code, once it has exited. Non-zero after a deliberate stop too (the tree is killed), so read
+    /// <see cref="StopReason"/> to tell a stop from a failure.
+    /// </summary>
+    public int? ExitCode => Server.ExitCode;
+
+    /// <summary>
+    /// Why the server stopped, once it has: <c>requested</c> (the server was disposed),
+    /// <c>signal</c> (Ctrl+C, SIGTERM, SIGHUP), <c>exited</c> (Heft exited on its own) or <c>timeout</c>; see
+    /// <see cref="Tamp.ServiceStopReason"/>. Null while it is running.
+    /// </summary>
+    public string? StopReason => Server.StopReason;
+
+    /// <summary>Completes when the Heft process has exited and its stop has been recorded.</summary>
+    public Task WaitForExitAsync(CancellationToken cancellationToken = default) => Server.WaitForExitAsync(cancellationToken);
+
+    /// <summary>
+    /// Stop the server: kills its process tree and removes its state file (stop reason <c>requested</c>). Safe to
+    /// call more than once, and after the server has already been stopped.
+    /// </summary>
     public void Dispose() => Server.Dispose();
 
     /// <inheritdoc cref="Dispose" />
