@@ -204,6 +204,111 @@ Everything else an SPFx repository needs already exists as a Tamp satellite:
 
 With SPFx 1.24.0 (Heft Jest plugin 2.0.19, Jest 30), `heft test` on **Windows** runs zero test suites, and coverage reports `NaN`. The same project on Linux finds and runs its tests. CI on `ubuntu-latest` is unaffected. This is in the rig, not in this package.
 
+## One-import pipeline: `SpfxPipelineBuild`
+
+Every SPFx build re-derived the same graph, which made the gate's position an adopter decision — and
+that is exactly where it goes wrong. Inherit the graph instead:
+
+```csharp
+class Build : SpfxPipelineBuild
+{
+    public static int Main(string[] args) => Execute<Build>(args);
+
+    protected override string SpfxWebDirectory => RootDirectory / "web";
+
+    // Seams worth filling. All optional.
+    [Parameter] readonly string? Version;
+    protected override string? SpfxSolutionVersionSource => Version;
+    protected override bool SpfxRequireSupportedNode => true;
+    protected override SppkgPolicy? SpfxDeployPolicy => new()
+    {
+        AllowedPermissions = [new("Microsoft Graph", "Sites.Read.All")],
+        AllowTenantWideDeployment = false,
+    };
+}
+```
+
+```bash
+tamp SpfxAll     # preflight -> collect -> publish -> enforce
+```
+
+### The order is the deliverable
+
+```
+SpfxPreflight    load the project, check the SPFx/Node pair     <- before anything builds
+      |
+SpfxCollect      restore -> stamp -> test -> package
+      |
+SpfxPublish      inspect the .sppkg, evaluate, write the SARIF   <- unconditional
+      |
+SpfxGate         judge the result and fail on policy             <- last
+```
+
+**Publication is never contingent on what the gate is about to decide.** An adopter who put
+`SppkgPolicy` in a target upstream of their SARIF write lost the SARIF on exactly the runs that had a
+policy violation, and nothing in this package stopped them. Every stage from collect onward is
+`AssuredAfterFailure()`, so the inspection and its SARIF are written even when a test failed or the
+policy is about to fail the build. This is the same hazard core fixed for the security chain in
+[tamp#151](https://github.com/tamp-build/tamp/issues/151), and the same remedy.
+
+Note where the policy is *evaluated*: in **publish**, because the SARIF describes a policy result, so
+producing the evidence requires running the policy. Only the verdict — whether a finding fails the
+build — belongs to the gate. With no policy configured, the default still yields an
+inspection-describing SARIF.
+
+`SpfxAll` is spelled that way rather than `Spfx` because a member named `Spfx` on the build class
+would shadow the `Spfx` facade for every other member in it.
+
+## SPFx and Node compatibility
+
+Microsoft supports a narrow Node window per SPFx version — one or two majors, moving every few
+releases. Building on an unsupported Node **does not fail clearly**: it fails inside Heft, or in a
+native-module build, or produces a silently different bundle.
+
+`SpfxPreflight` names it before anything builds, which is the only time the check is worth anything:
+
+```
+[spfx] WARNING: SPFx 1.22.0 supports Node 22, but Node v18.19.0 is running. Building on an
+unsupported Node does not fail clearly: expect an error inside Heft, a native-module build failure,
+or a silently different bundle.
+```
+
+**Warn by default; `SpfxRequireSupportedNode` to fail.** An unsupported-but-working pair is a real
+situation during an upgrade, and a hard failure on a newly released Node major would break builds
+that are fine.
+
+### Three outcomes, not two
+
+| verdict | meaning |
+|---|---|
+| `Supported` | the running Node major is listed for this SPFx version |
+| `Unsupported` | it is not — warned, or failed when `SpfxRequireSupportedNode` is set |
+| `Unknown` | **nothing was checked** — the SPFx version could not be read, or is newer than the data |
+
+`Unknown` is never reported as `Supported`, and never fails the build either: "nothing was checked"
+is not evidence of a problem, and not evidence of its absence. It is logged as loudly as a failure.
+
+### The table is data, not code
+
+`spfx-node-compatibility.json` ships embedded, transcribed from
+[Microsoft's compatibility reference](https://learn.microsoft.com/en-us/sharepoint/dev/spfx/compatibility)
+with the date it was taken. A newer SPFx release can be taught to an existing build without waiting
+for a `Tamp.Spfx` release:
+
+```csharp
+protected override SpfxNodeSupport SpfxNodeCompatibility => SpfxNodeSupport.LoadFrom("spfx-node.json");
+```
+
+Two details the table carries that a flattened version would lose: Microsoft's `v16.13+` qualifier is
+a `minimumMinor`, so Node 16.9 is correctly rejected for SPFx 1.17; and where patches within one
+minor differ — 1.8.0/1.8.1 allow Node 8 while 1.8.2 adds 10 — the minor entry holds the **narrower**
+set, because claiming support Microsoft does not is the one direction this must never fail in.
+
+The project's own `engines.node` is read as a cross-check and reported when it disagrees, since the
+rig declares its supported range there and that is newer than any transcription. It is a textual read
+of the majors a range enumerates, **not** semver satisfaction: an unbounded `>=22.14.0` allows 24 and
+26 as well, so that form yields no opinion rather than a wrong one.
+
 ## Releasing
 
 Tag `v<X.Y.Z>` once `Tamp.Heft.V1` at the pinned version is on NuGet. CI builds against a checkout of `tamp-heft` until then (`TampHeftMode=project`).

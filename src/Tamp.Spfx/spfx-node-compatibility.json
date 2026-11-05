@@ -1,0 +1,53 @@
+{
+  "$comment": [
+    "SPFx version -> supported Node.js majors, transcribed from Microsoft's own compatibility",
+    "reference. This is DATA, not a compiled-in table, so a newer SPFx release can be taught to an",
+    "existing build without waiting for a Tamp.Spfx release: point SpfxNodeSupport.LoadFrom at your",
+    "own copy of this file.",
+    "",
+    "source: https://learn.microsoft.com/en-us/sharepoint/dev/spfx/compatibility",
+    "",
+    "Keys are the SPFx version exactly as that table lists it. A project's version is matched exactly",
+    "first, then by falling back to its major.minor, then its major — so 1.24.2 resolves against 1.24",
+    "and a new patch does not read as unknown. Values are Node MAJORS only: the table's 'v16.13+'",
+    "qualifier is recorded in minimumMinor rather than being flattened away.",
+    "",
+    "Where patches within one minor differ, the minor entry carries the NARROWER set and the wider",
+    "one is listed at its exact patch: 1.8.0/1.8.1 support Node 8 while 1.8.2 adds 10, and 1.4.0",
+    "supports Node 6 while 1.4.1 adds 8. Collapsing those upward would claim support Microsoft does",
+    "not, which is the one direction this file must never fail in."
+  ],
+  "asOf": "2026-11-02",
+  "source": "https://learn.microsoft.com/en-us/sharepoint/dev/spfx/compatibility",
+  "recommended": {
+    "1.24": 26
+  },
+  "versions": {
+    "1.24": { "node": [22, 24, 26], "minimumMinor": { "22": 14 } },
+    "1.23": { "node": [22] },
+    "1.22": { "node": [22] },
+    "1.21": { "node": [22] },
+    "1.20": { "node": [18] },
+    "1.19": { "node": [18] },
+    "1.18": { "node": [16, 18] },
+    "1.17": { "node": [16], "minimumMinor": { "16": 13 } },
+    "1.16": { "node": [16], "minimumMinor": { "16": 13 } },
+    "1.15": { "node": [12, 14, 16] },
+    "1.14": { "node": [12, 14] },
+    "1.13": { "node": [12, 14] },
+    "1.12": { "node": [10, 12, 14] },
+    "1.11": { "node": [10] },
+    "1.10": { "node": [8, 10] },
+    "1.9": { "node": [8, 10] },
+    "1.8.2": { "node": [8, 10] },
+    "1.8": { "node": [8] },
+    "1.7": { "node": [8] },
+    "1.6": { "node": [6, 8] },
+    "1.5": { "node": [6, 8] },
+    "1.4.1": { "node": [6, 8] },
+    "1.4": { "node": [6] },
+    "1.3": { "node": [6] },
+    "1.1": { "node": [6] },
+    "1.0": { "node": [6] }
+  }
+}

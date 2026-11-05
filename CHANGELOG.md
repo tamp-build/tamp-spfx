@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+### Added
+
+- **`SpfxPipelineBuild` — the SPFx graph, in the order it has to run** ([#9](https://github.com/tamp-build/tamp-spfx/issues/9)). Every adopter re-derived `Restore → Stamp → Test → Package → Gate`, which made the gate's position a per-project decision. That is exactly where it goes wrong: a gate upstream of evidence publication suppresses the evidence **in the runs where findings exist**, so evidence arrives reliably when there is nothing to report and unreliably when there is. [tamp#151](https://github.com/tamp-build/tamp/issues/151) is the demonstration, and core's remedy was to ship the order rather than document it.
+
+  Four stages — **preflight** (project + Node check) → **collect** (restore, stamp, test, package) → **publish** (inspect, evaluate, SARIF) → **enforce** (policy verdict) — with every stage from collect onward `AssuredAfterFailure()`, so the inspection and its SARIF are written even when a test failed or the policy is about to fail the build.
+
+  The policy is **evaluated in publish**, not in the gate: `SppkgSarif` describes a policy *result*, so producing the evidence requires running the policy. Only the verdict belongs to enforcement. With no policy configured the default still yields an inspection-describing SARIF.
+
+  Seams: `SpfxWebDirectory` (required), `SpfxSolutionVersionSource`, `SpfxDeployPolicy`, `SpfxProductionPackage`, `SpfxRequireSupportedNode`, `SpfxNodeCompatibility`, `SpfxRestorePlan()`. Policy and version source both default to **nothing**, because inventing a version would make the shipped version a surprise and inventing a policy would enforce an opinion this package does not hold.
+
+  The aggregate target is `SpfxAll`, not `Spfx`: a member named `Spfx` on the build class would shadow the `Spfx` facade for every other member in it.
+
+- **SPFx/Node compatibility checking, before the build** ([#9](https://github.com/tamp-build/tamp-spfx/issues/9)). Nothing validated the pair, and an unsupported one does not fail clearly — it fails inside Heft, or in a native-module build, or produces a silently different bundle. `SpfxPreflight` names it first, which is the only point at which the check is worth anything.
+
+  **Three outcomes, not two.** `Unknown` — the SPFx version could not be read, or is newer than the data — is never reported as `Supported`, because reporting an unchecked pair as a good pair is how a check becomes worse than no check. It never fails the build either: "nothing was checked" is not evidence of a problem, nor of its absence, so it is logged as loudly as a failure. **Warn by default**, `SpfxRequireSupportedNode` to fail, since an unsupported-but-working pair is a real situation mid-upgrade.
+
+  **The table is data**, not a compiled-in dictionary: `spfx-node-compatibility.json` is embedded and transcribed from Microsoft's compatibility reference with the date it was taken, and `SpfxNodeSupport.LoadFrom` teaches a build about a newer SPFx release without waiting for a package release. Two details a flattened table would lose are kept: `v16.13+` is a `minimumMinor`, so Node 16.9 is correctly rejected for SPFx 1.17; and where patches within one minor differ — 1.8.0/1.8.1 allow Node 8 while 1.8.2 adds 10 — the minor entry holds the **narrower** set, because claiming support Microsoft does not is the one direction this must never fail in.
+
+  `SpfxProject` now reads `engines.node`, used as a cross-check and reported when it disagrees with the bundled table, since the rig declares its own range there and that is newer than any transcription. It is a textual read of the majors a range enumerates, **not** semver satisfaction — an unbounded `>=22.14.0` allows 24 and 26 too, so that form yields no opinion rather than a wrong one. It is also the most common form a rig writes, so a wrong answer there would have fired on nearly every project.
+
 ## [0.3.0] — 2026-11-04
 
 ### Added

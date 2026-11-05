@@ -27,4 +27,13 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>
 
+  <!--
+    The SPFx/Node compatibility table ships as data rather than a compiled-in dictionary, so a newer
+    SPFx release can be taught to an existing build via SpfxNodeSupport.LoadFrom instead of waiting
+    for a Tamp.Spfx release (#9).
+  -->
+  <ItemGroup>
+    <EmbeddedResource Include="spfx-node-compatibility.json" />
+  </ItemGroup>
+
 </Project>
