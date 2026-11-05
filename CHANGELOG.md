@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-05 - the SPFx pipeline ships its own order, and the Node pair is checked first
+
+### Changed
+
+- **Releases now create a GitHub Release and announce their version on the issues they carry**, matching core ([tamp#159](https://github.com/tamp-build/tamp/issues/159), [tamp#164](https://github.com/tamp-build/tamp/issues/164)). A published version used to leave a bare tag: the Releases tab advertised an older version, nobody watching was notified, and an issue closed before its release was cut never got its version. `CHANGELOG.md` stays the single source of truth and both are derived from it. The publish job gains `contents: write` and `issues: write`, scoped to that job alone.
+
 ### Added
 
 - **`SpfxPipelineBuild` — the SPFx graph, in the order it has to run** ([#9](https://github.com/tamp-build/tamp-spfx/issues/9)). Every adopter re-derived `Restore → Stamp → Test → Package → Gate`, which made the gate's position a per-project decision. That is exactly where it goes wrong: a gate upstream of evidence publication suppresses the evidence **in the runs where findings exist**, so evidence arrives reliably when there is nothing to report and unreliably when there is. [tamp#151](https://github.com/tamp-build/tamp/issues/151) is the demonstration, and core's remedy was to ship the order rather than document it.
