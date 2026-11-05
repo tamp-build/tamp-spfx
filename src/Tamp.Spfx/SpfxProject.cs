@@ -104,6 +104,15 @@ public sealed record SpfxProject
     public string? SpfxVersion { get; init; }
     /// <summary>The toolchain the project builds with.</summary>
     public SpfxToolchain Toolchain { get; init; }
+    /// <summary>
+    /// <c>engines.node</c> from <c>package.json</c>, verbatim, when the project declares one.
+    /// </summary>
+    /// <remarks>
+    /// Authoritative per project in a way a table shipped in a NuGet package cannot be — the rig
+    /// declares its own supported range here, and that range is newer than any transcription. Used by
+    /// <see cref="SpfxNodeSupport"/> to flag a disagreement with its bundled data (#9).
+    /// </remarks>
+    public string? EnginesNode { get; init; }
     /// <summary>The solution definition.</summary>
     public required SpfxSolutionConfig Solution { get; init; }
     /// <summary><c>config/config.json</c> externals: module name to script URL or path.</summary>
@@ -125,12 +134,13 @@ public sealed record SpfxProject
         if (!File.Exists(packageJson)) throw new FileNotFoundException("Not an SPFx project: package.json is missing.", packageJson);
         if (!File.Exists(solutionJson)) throw new FileNotFoundException("Not an SPFx project: config/package-solution.json is missing.", solutionJson);
 
-        string? name, spfxVersion;
+        string? name, spfxVersion, enginesNode;
         SpfxToolchain toolchain;
         using (var pkg = Jsonc.ParseFile(packageJson))
         {
             var p = pkg.RootElement;
             name = p.GetString("name");
+            enginesNode = p.GetObject("engines")?.GetString("node");
             var deps = Dependencies(p);
             spfxVersion = Bare(deps.GetValueOrDefault("@microsoft/sp-core-library") ?? deps.GetValueOrDefault("@microsoft/spfx-web-build-rig"));
             toolchain = deps.ContainsKey("@microsoft/spfx-web-build-rig") || deps.ContainsKey("@rushstack/heft")
@@ -164,6 +174,7 @@ public sealed record SpfxProject
             PackageName = name,
             SpfxVersion = spfxVersion,
             Toolchain = toolchain,
+            EnginesNode = enginesNode,
             Solution = solution,
             Externals = externals,
             Outputs = new SpfxOutputs
