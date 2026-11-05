@@ -33,7 +33,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: release
     permissions:
-      contents: read
+      contents: write   # create the GitHub Release for this tag (tamp#159); read would not suffice
+      issues: write     # announce the shipped version on the issues this release carries (tamp#164)
       id-token: write   # OIDC token for nuget.org trusted publishing (NuGet/login). This job only.
 
     steps:
@@ -131,6 +132,56 @@ jobs:
         env:
           NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         run: dotnet tamp Push
+
+      # A published version with no GitHub Release leaves the Releases tab advertising an old
+      # version, notifies nobody watching the repo, and gives a reader nowhere to land. The notes
+      # come out of CHANGELOG.md, which stays the single source of truth — the Release is derived,
+      # so it cannot drift from the repo. Only on a tag push: a manual dispatch has no tag.
+      # (tamp#159, tamp#164)
+      - name: GitHub Release
+        if: ${{ github.event_name == 'push' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          version="${TAG#v}"
+
+          notes=notes.md
+          if ! bash .github/scripts/changelog-section.sh "$version" CHANGELOG.md > "$notes"; then
+            # No section is worth surfacing, but not worth failing a release that already pushed to
+            # nuget.org — the packages are public and irreversible by this point.
+            echo "::warning::No CHANGELOG.md section for $version; creating the Release without notes."
+            printf 'No changelog section was found for %s. See [CHANGELOG.md](https://github.com/%s/blob/main/CHANGELOG.md).\n' \
+              "$version" "$GITHUB_REPOSITORY" > "$notes"
+          fi
+
+          {
+            echo ""
+            echo "---"
+            echo ""
+            echo "Packages for this release are on [nuget.org](https://www.nuget.org/profiles/Tamp), and the attached \`.nupkg\` files are the exact artifacts that were pushed."
+          } >> "$notes"
+
+          # Idempotent: re-running a release edits the existing Release rather than failing.
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --notes-file "$notes" --title "$version"
+          else
+            gh release create "$TAG" --notes-file "$notes" --title "$version" --verify-tag
+          fi
+
+          shopt -s nullglob
+          packages=(./artifacts/*.nupkg)
+          if [[ ${#packages[@]} -gt 0 ]]; then
+            gh release upload "$TAG" "${packages[@]}" --clobber
+          fi
+
+          echo "Release: $(gh release view "$TAG" --json url --jq .url)"
+
+          # Announce the shipped version on every issue this release carries. A closing comment
+          # cannot do it when the issue is closed before the release exists.
+          bash .github/scripts/announce-release.sh "$TAG" "$notes" || \
+            echo "::warning::Issue announcements failed; the release itself is unaffected."
 
       - name: Dry-run summary
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run == true }}
